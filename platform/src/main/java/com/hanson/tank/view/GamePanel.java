@@ -13,7 +13,7 @@ public class GamePanel extends JPanel {
 
     public GamePanel(PaintService paintService) {
         this.paintService = paintService;
-        int size = GameConstants.GAME_PIXEL_WIDTH * GameConstants.GRID_WIDTH;
+        int size = GameConstants.GAME_PANEL_GRID_COUNT * GameConstants.GRID_WIDTH;
         setSize(size, size);
     }
 

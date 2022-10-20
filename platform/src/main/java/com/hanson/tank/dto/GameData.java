@@ -4,6 +4,7 @@ import com.hanson.enums.Direction;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.entity.BattleMap;
+import com.hanson.tank.entity.Bullet;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,11 +42,8 @@ public class GameData {
         return players;
     }
 
+    public List<Bullet> bullets;
 
-    public void initData(){
-        start = true;
-        this.generatePlayers(1);
-    }
 
     public void generatePlayers(int num){
 
@@ -60,6 +58,12 @@ public class GameData {
 
             players.add(player);
         }
+
+        bullets = new ArrayList<>();
+    }
+
+    public List<Bullet> getBullets(){
+        return bullets;
     }
 
 }

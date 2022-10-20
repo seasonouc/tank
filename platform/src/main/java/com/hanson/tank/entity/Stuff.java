@@ -18,6 +18,16 @@ public abstract class Stuff {
 
     private int x;
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    private boolean active;
+
     public int getX() {
         return x;
     }
@@ -26,15 +36,21 @@ public abstract class Stuff {
         return y;
     }
 
+    public void setXY(int x,int y){
+        this.x = x;
+        this.y = y;
+    }
+
     public abstract int getXPixel();
 
     public abstract int getYPixel();
 
     private int y;
 
-    public Stuff(int x,int y){
+    public Stuff(int x,int y,boolean active){
         this.x = x;
         this.y = y;
+        this.active = active;
     }
 
     public abstract Image getImage();
@@ -42,4 +58,6 @@ public abstract class Stuff {
     public abstract int getWidth();
 
     public abstract Color getColor();
+
+    public abstract void setColor(Color color);
 }

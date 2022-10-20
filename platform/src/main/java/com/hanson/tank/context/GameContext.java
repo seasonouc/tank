@@ -1,5 +1,8 @@
 package com.hanson.tank.context;
 
+import com.hanson.Player;
+import com.hanson.PlayerImplDemo;
+import com.hanson.enums.StuffType;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.dto.GameData;
 import com.hanson.tank.service.GameDataRefresh;
@@ -9,7 +12,8 @@ import com.hanson.tank.view.GamePanel;
 import com.hanson.tank.view.resource.Images;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +33,13 @@ public class GameContext {
         return gameContext;
     }
 
-
-
     private GameData gameData;
 
     private GamePanel gamePanel;
 
     private PaintService paintService;
+
+    private StuffType[][] map;
 
     private ThreadPoolExecutor taskExecutor = new ThreadPoolExecutor(10,
             20,
@@ -47,11 +51,13 @@ public class GameContext {
 
     }
 
+
+
     public void init(){
         GameFrame gameFrame = new GameFrame();
 
         gameData = new GameData( );
-        gameData.generatePlayers(1);
+        gameData.generatePlayers(2);
 
         paintService = new PaintService(gameData);
 
@@ -60,7 +66,7 @@ public class GameContext {
         gameFrame.add(gamePanel);
         gameFrame.setVisible(true);
 
-        int size = GameConstants.GAME_PIXEL_WIDTH * GameConstants.GRID_WIDTH;
+        int size = GameConstants.GAME_PANEL_GRID_COUNT * GameConstants.GRID_WIDTH;
 
         gameFrame.setSize(size+30,size+30);
         gamePanel.setSize(size,size);
@@ -68,7 +74,11 @@ public class GameContext {
         gameFrame.setIconImage(Images.TankImg[0]);
         gameData.setStart(true);
 
-        taskExecutor.execute(new GameDataRefresh(this,null));
+        List<Player> players = new ArrayList<>();
+        players.add(new PlayerImplDemo());
+        players.add(new PlayerImplDemo());
+
+        taskExecutor.execute(new GameDataRefresh(this,players));
     }
 
     public GameData getGameData() {
@@ -79,5 +89,10 @@ public class GameContext {
         return gamePanel;
     }
 
+
+    public void resetMap(){
+        map = new StuffType[GameConstants.GAME_PANEL_GRID_COUNT][GameConstants.GAME_PANEL_GRID_COUNT];
+
+    }
 
 }

@@ -2,7 +2,8 @@ package com.hanson.enums;
 
 public enum StuffType {
     Tank(1),
-    Wall(2);
+    Wall(2),
+    None(3);
 
     int type;
 

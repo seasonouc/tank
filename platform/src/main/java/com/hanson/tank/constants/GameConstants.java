@@ -7,7 +7,7 @@ public class GameConstants {
     /**
      * 坦克颜色
      */
-    public final static Color TANK_COLOR[] = {Color.BLUE,Color.RED,Color.GREEN,Color.GRAY,Color.PINK};
+    public final static Color TANK_COLOR[] = {Color.blue,Color.red,Color.gray,Color.pink};
 
 
     /**
@@ -18,12 +18,13 @@ public class GameConstants {
     /**
      * 一个网格的大小, GRID_WIDTH*GRID_WIDTH
      */
-    public final static int GRID_WIDTH = 30;
+    public final static int GRID_WIDTH = 40;
 
     /**
      * 游戏面板宽度(网格数)
      */
-    public final static int GAME_PIXEL_WIDTH =  30;
+    public final static int GAME_PANEL_GRID_COUNT =  25;
+
 
 
 
