@@ -7,11 +7,17 @@ public class Images {
     /**
      * 我方坦克图片
      */
-    public static final Image[] TankImg = {
-            getImage("/img/UTank_.gif"),
-            getImage("/img/RTank_.gif"),
-            getImage("/img/DTank_.gif"),
-            getImage("/img/LTank_.gif")
+    public static final Image[][] TankImg = {
+            {
+                getImage("/img/UTank_.gif"),
+                getImage("/img/RTank_.gif"),
+                getImage("/img/DTank_.gif"),
+                getImage("/img/LTank_.gif")},
+            {
+                getImage("/img/UTank.gif"),
+                getImage("/img/RTank.gif"),
+                getImage("/img/DTank.gif"),
+                getImage("/img/LTank.gif")}
     };
 
 

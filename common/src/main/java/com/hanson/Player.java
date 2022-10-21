@@ -16,4 +16,6 @@ public interface Player {
     List<Command> getAction(StuffType[][] map, List<Tank> my, List<Tank> enemy);
 
 
+    String getName();
+
 }

@@ -44,7 +44,7 @@ public class IPlayer {
             case UP:{
 
                 for (int i = 1; i <= tankNum; i++) {
-                    ITank tank = new ITank(id * 100 + i,
+                    ITank tank = new ITank(id,id * 100 + i,
                             color,
                             i * width,
                             GameConstants.GAME_PANEL_GRID_COUNT - 1,
@@ -56,7 +56,7 @@ public class IPlayer {
             //方向朝下，那生成位置在上方
             case DOWN:{
                 for (int i = 1; i <= tankNum; i++) {
-                    ITank tank = new ITank(id * 100 + i,
+                    ITank tank = new ITank(id,id * 100 + i,
                             color,
                             i * width,
                             0,
@@ -67,7 +67,7 @@ public class IPlayer {
             }
             case LEFT:{
                 for (int i = 1; i <= tankNum; i++) {
-                    ITank tank = new ITank(id * 100 + i,
+                    ITank tank = new ITank(id,id * 100 + i,
                             color,
                             GameConstants.GAME_PANEL_GRID_COUNT - 1,
                             i * width,
@@ -78,7 +78,7 @@ public class IPlayer {
             }
             case RIGHT:{
                 for (int i = 1; i <= tankNum; i++) {
-                    ITank tank = new ITank(id * 100 + i,
+                    ITank tank = new ITank(id,id * 100 + i,
                             color,
                             GameConstants.GAME_PANEL_GRID_COUNT - 1,
                             0,

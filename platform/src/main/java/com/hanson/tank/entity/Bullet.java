@@ -29,12 +29,12 @@ public class Bullet extends Stuff{
 
     @Override
     public int getXPixel() {
-        return getX() * GameConstants.GRID_WIDTH;
+        return getX() * GameConstants.GRID_WIDTH + (GameConstants.GRID_WIDTH - getWidth())/2;
     }
 
     @Override
     public int getYPixel() {
-        return getY() * GameConstants.GRID_WIDTH;
+        return getY() * GameConstants.GRID_WIDTH + (GameConstants.GRID_WIDTH - getWidth())/2;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Bullet extends Stuff{
 
     @Override
     public int getWidth() {
-        return GameConstants.GRID_WIDTH / 2;
+        return GameConstants.GRID_WIDTH / 3;
     }
 
     @Override

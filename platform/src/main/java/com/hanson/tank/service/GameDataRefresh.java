@@ -6,6 +6,7 @@ import com.hanson.entity.Tank;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.context.GameContext;
 import com.hanson.tank.dto.GameData;
+import com.hanson.tank.entity.Boom;
 import com.hanson.tank.entity.Bullet;
 import com.hanson.tank.entity.ITank;
 
@@ -17,11 +18,9 @@ import java.util.Map;
 public class GameDataRefresh implements Runnable{
     private GameContext gameContext;
 
-    private List<Player> iPlayers;
-
-    public GameDataRefresh(GameContext gameContext, List<Player> iPlayers){
+    public GameDataRefresh(GameContext gameContext){
         this.gameContext = gameContext;
-        this.iPlayers = iPlayers;
+
     }
 
     @Override
@@ -29,15 +28,15 @@ public class GameDataRefresh implements Runnable{
         GameData gamedata = gameContext.getGameData();
         JPanel gamePanel = gameContext.getGamePanel();
         while(gamedata.isStart()){
-            for (int i = 0; i < iPlayers.size(); i++) {
-                Player player = iPlayers.get(i);
-                IPlayer iPlayer = gamedata.getPlayers().get(i);
+            for (int i = 0; i < gamedata.getPlayers().size(); i++) {
+                Player player = gamedata.getPlayers().get(i);
+                IPlayer iPlayer = gamedata.getIPlayers().get(i);
 
                 Map<Integer,ITank> iTanks = iPlayer.getTanks();
                 List<Tank> tanks = new ArrayList<>();
 
                 iTanks.forEach(( id,iTank) -> {
-                    Tank tank = new Tank(iTank.isAlive(),iTank.getId(),iTank.getX(),iTank.getY(),iTank.getDirection());
+                    Tank tank = new Tank(iTank.isActive(),iTank.getId(),iTank.getX(),iTank.getY(),iTank.getDirection());
                     tanks.add(tank);
                 });
 
@@ -53,12 +52,29 @@ public class GameDataRefresh implements Runnable{
 
                 });
 
+
                 gamedata.getBullets().forEach(bullet -> {
-                    boolean moveRes = bullet.move();
+                    bullet.move();
+                    iTanks.forEach((id,tank) ->{
+                        if (bullet.isActive() && tank.isActive() && bullet.getX() == tank.getX() && bullet.getY() == tank.getY()) {
+                           bullet.setActive(false);
+                           tank.setActive(false);
+                            gamedata.getBooms().add(new Boom(bullet.getX(),bullet.getY()));
+                           return;
+                       }
+                    });
                 });
 
-            }
+                gamedata.getBooms().forEach(boom -> {
+                    boom.move();
+                });
 
+                //碰撞检测
+
+                gamedata.clearBullets();
+                gamedata.clearBoom();
+
+            }
 
             try {
                 Thread.sleep(400);

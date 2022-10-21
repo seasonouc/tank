@@ -2,6 +2,7 @@ package com.hanson.tank.entity;
 
 import com.hanson.entity.Command;
 import com.hanson.enums.Direction;
+import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.view.resource.Images;
 
@@ -20,18 +21,6 @@ public class ITank extends Stuff{
      */
     private int speed = 4;
 
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    /**
-     * 是否存活
-     */
-    private boolean alive;
 
     public int getId() {
         return id;
@@ -42,6 +31,11 @@ public class ITank extends Stuff{
      */
     private int id;
 
+    /**
+     * 玩家id
+     */
+    private int playerId;
+
 
     public Direction getDirection() {
         return direction;
@@ -49,17 +43,21 @@ public class ITank extends Stuff{
 
     private Direction direction;
 
-    public ITank(int id, Color color, int x, int y, Direction direction){
+    public ITank(int playerId,int id,  Color color, int x, int y, Direction direction){
 
         super(x,y,true);
 
         this.id = id;
         this.color = color;
+        this.playerId = playerId;
 
         this.direction = direction;
     }
 
     public Bullet doAction(Command command){
+        if(!isActive()){
+            return null;
+        }
         switch (command.getAction()){
             case Move:{
                 int x = getX() +  direction.getMoveX();
@@ -96,7 +94,7 @@ public class ITank extends Stuff{
 
     @Override
     public Image getImage() {
-        return Images.TankImg[direction.getDir()];
+        return Images.TankImg[playerId][direction.getDir()];
     }
 
     @Override

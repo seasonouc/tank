@@ -2,6 +2,7 @@ package com.hanson.tank.service;
 
 
 import com.hanson.tank.aggregate.IPlayer;
+import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.context.GameContext;
 import com.hanson.tank.dto.GameData;
 import com.hanson.tank.entity.Bullet;
@@ -20,11 +21,13 @@ public class PaintService {
     }
 
     public void paintGamePanel(JPanel panel, Graphics g){
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0, GameConstants.GRID_WIDTH*GameConstants.GAME_PANEL_GRID_COUNT,GameConstants.GRID_WIDTH*GameConstants.GAME_PANEL_GRID_COUNT);
         GameContext context = GameContext.getInstance();
 
         if(gameData.isStart()){
 
-            List<IPlayer> players = gameData.getPlayers();
+            List<IPlayer> players = gameData.getIPlayers();
 
             players.forEach(player -> {
                 player.getTanks().forEach((id,tank) -> {
@@ -37,6 +40,8 @@ public class PaintService {
             bullets.forEach(bullet -> {
                 drawStuff(panel,g,bullet);
             });
+
+            gameData.getBooms().forEach(boom -> drawStuff(panel,g,boom));
         }
 
     }
@@ -45,13 +50,12 @@ public class PaintService {
         if( !stuff.isActive()){
             return;
         }
-        g.setColor(stuff.getColor());
+
         g.drawImage(stuff.getImage(),
                 stuff.getXPixel(),
                 stuff.getYPixel(),
                 stuff.getWidth(),
                 stuff.getWidth(),
-                stuff.getColor(),
                 panel);
     }
 

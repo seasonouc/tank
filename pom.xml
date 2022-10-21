@@ -6,6 +6,7 @@
     <modules>
         <module>common</module>
         <module>platform</module>
+        <module>demo</module>
     </modules>
     <groupId>com.example.hanson</groupId>
     <artifactId>tank</artifactId>
