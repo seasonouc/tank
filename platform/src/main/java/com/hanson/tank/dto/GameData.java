@@ -7,6 +7,7 @@ import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.entity.BattleMap;
 import com.hanson.tank.entity.Boom;
 import com.hanson.tank.entity.Bullet;
+import com.hanson.tank.entity.Wall;
 import com.hanson.tank.loader.JarLoader;
 
 import java.awt.*;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameData {
 
+public class GameData {
 
 
     /**
@@ -60,18 +61,52 @@ public class GameData {
 
     private List<Boom> booms;
 
+    public List<Wall> getWalls() {
+        return walls;
+    }
 
-    public void generatePlayers(int num){
+    private List<Wall> walls;
 
-        Direction genDirection[] = new Direction[]{Direction.UP,Direction.DOWN,Direction.LEFT,Direction.RIGHT};
+
+    private int[][] map;
+
+    public void refreshMap(){
+
+        map = new int[GameConstants.GRID_WIDTH][GameConstants.GRID_WIDTH];
+        getWalls().forEach(wall -> {
+            if(wall.isActive()){
+                map[wall.getX()][wall.getY()] = wall.getStuffType().getType();
+
+            }
+        });
+
+        getBullets().forEach(bullet -> {
+            if(bullet.isActive()){
+                map[bullet.getX()][bullet.getY()] = bullet.getStuffType().getType();
+
+            }
+        });
+
+        iPlayers.forEach(player->{
+            player.getTanks().forEach((id, iTank) ->{
+                if(iTank.isActive()){
+                    map[iTank.getX()][iTank.getY()] = iTank.getStuffType().getType();
+                }
+            });
+        });
+    }
+
+
+    public void generatePlayers(int num) {
+
+        Direction genDirection[] = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
 
         iPlayers = new ArrayList<>();
-        for(int i=0;i<num;i++){
-            IPlayer player = new IPlayer(i,"default");
+        for (int i = 0; i < num; i++) {
+            IPlayer player = new IPlayer(i, "default");
             Direction dir = genDirection[i];
             Color color = GameConstants.TANK_COLOR[dir.getDir()];
-            player.generateTanks(dir,GameConstants.INIT_TANK_NUM,color);
-
+            player.generateTanks(dir, GameConstants.INIT_TANK_NUM, color);
             iPlayers.add(player);
         }
 
@@ -79,23 +114,33 @@ public class GameData {
         booms = new ArrayList<>();
     }
 
-    public List<Bullet> getBullets(){
+    public void generateWalls(){
+        walls = new ArrayList<>();
+        int middle = GameConstants.GAME_PANEL_GRID_COUNT / 2;
+        int four = GameConstants.GAME_PANEL_GRID_COUNT / 4;
+        for (int i = middle - 5; i <= middle + 5; i++) {
+            walls.add(new Wall(four,i));
+            walls.add(new Wall(four * 3, i));
+        }
+    }
+
+    public List<Bullet> getBullets() {
         return bullets;
     }
 
-    public List<Boom> getBooms(){
+    public List<Boom> getBooms() {
         return booms;
     }
 
-    public void clearBullets(){
+    public void clearBullets() {
         bullets = bullets.stream().filter(bullet -> bullet.isActive()).collect(Collectors.toList());
     }
 
-    public void clearBoom(){
+    public void clearBoom() {
         booms = booms.stream().filter(boom -> boom.isActive()).collect(Collectors.toList());
     }
 
-    public void  loadPlayer(File[] playerFiles){
+    public void loadPlayer(File[] playerFiles) {
         int playerNum = playerFiles.length;
         generatePlayers(playerNum);
 

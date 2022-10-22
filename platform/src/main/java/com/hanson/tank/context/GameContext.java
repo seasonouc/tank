@@ -1,7 +1,5 @@
 package com.hanson.tank.context;
 
-import com.hanson.Player;
-import com.hanson.PlayerImplDemo;
 import com.hanson.enums.StuffType;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.dto.GameData;
@@ -14,9 +12,6 @@ import com.hanson.tank.view.resource.Images;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -86,6 +81,7 @@ public class GameContext {
     }
 
     public void start(){
+        getGameData().generateWalls();
         getGameData().setStart(true);
         taskExecutor.execute(new GameDataRefresh(this));
     }

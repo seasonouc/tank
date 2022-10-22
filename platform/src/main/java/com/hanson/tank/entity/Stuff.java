@@ -47,7 +47,7 @@ public abstract class Stuff {
 
     private int y;
 
-    public Stuff(int x,int y,boolean active){
+    public Stuff(int x,int y,boolean active,StuffType stuffTyp){
         this.x = x;
         this.y = y;
         this.active = active;

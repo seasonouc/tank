@@ -2,6 +2,7 @@ package com.hanson.tank.entity;
 
 import com.hanson.entity.Command;
 import com.hanson.enums.Direction;
+import com.hanson.enums.StuffType;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.view.resource.Images;
@@ -45,7 +46,7 @@ public class ITank extends Stuff{
 
     public ITank(int playerId,int id,  Color color, int x, int y, Direction direction){
 
-        super(x,y,true);
+        super(x,y,true, StuffType.Tank);
 
         this.id = id;
         this.color = color;

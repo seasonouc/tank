@@ -1,5 +1,6 @@
 package com.hanson.tank.entity;
 
+import com.hanson.enums.StuffType;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.view.resource.Images;
 
@@ -10,7 +11,7 @@ public class Boom extends Stuff{
     private int step;
 
     public Boom(int x,int y){
-        super(x,y,true);
+        super(x,y,true, StuffType.Boom);
         step = 0;
     }
 

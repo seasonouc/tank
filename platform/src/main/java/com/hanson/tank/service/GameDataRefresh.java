@@ -32,49 +32,62 @@ public class GameDataRefresh implements Runnable{
                 Player player = gamedata.getPlayers().get(i);
                 IPlayer iPlayer = gamedata.getIPlayers().get(i);
 
-                Map<Integer,ITank> iTanks = iPlayer.getTanks();
+                Map<Integer, ITank> iTanks = iPlayer.getTanks();
                 List<Tank> tanks = new ArrayList<>();
 
-                iTanks.forEach(( id,iTank) -> {
-                    Tank tank = new Tank(iTank.isActive(),iTank.getId(),iTank.getX(),iTank.getY(),iTank.getDirection());
+                iTanks.forEach((id, iTank) -> {
+                    Tank tank = new Tank(iTank.isActive(), iTank.getId(), iTank.getX(), iTank.getY(), iTank.getDirection());
                     tanks.add(tank);
                 });
 
-                List<Command> commands = player.getAction(null,tanks,null);
+                List<Command> commands = player.getAction(null, tanks, null);
 
-                commands.forEach(command ->{
+                commands.forEach(command -> {
                     command.getId();
                     Bullet bullet = iTanks.get(command.getId()).doAction(command);
 
-                    if(bullet != null){
+                    if (bullet != null) {
                         gamedata.getBullets().add(bullet);
                     }
 
                 });
+            }
 
 
-                gamedata.getBullets().forEach(bullet -> {
-                    bullet.move();
-                    iTanks.forEach((id,tank) ->{
+            gamedata.getBullets().forEach(bullet -> {
+                bullet.move();
+                gamedata.getIPlayers().forEach(iPlayer -> {
+                    iPlayer.getTanks().forEach((id,tank)->{
                         if (bullet.isActive() && tank.isActive() && bullet.getX() == tank.getX() && bullet.getY() == tank.getY()) {
-                           bullet.setActive(false);
-                           tank.setActive(false);
-                            gamedata.getBooms().add(new Boom(bullet.getX(),bullet.getY()));
-                           return;
-                       }
+                            bullet.setActive(false);
+                            tank.setActive(false);
+                            iPlayer.decreaseTank();
+                            gamedata.getBooms().add(new Boom(bullet.getX(), bullet.getY()));
+                            return;
+                        }
                     });
                 });
 
-                gamedata.getBooms().forEach(boom -> {
-                    boom.move();
+                gamedata.getWalls().forEach(wall -> {
+                    if (bullet.isActive() && wall.isActive() && bullet.getX() == wall.getX() && bullet.getY() == wall.getY()) {
+                        bullet.setActive(false);
+                        wall.setActive(false);
+                        gamedata.getBooms().add(new Boom(bullet.getX(), bullet.getY()));
+                        return;
+                    }
                 });
+            });
 
-                //碰撞检测
 
-                gamedata.clearBullets();
-                gamedata.clearBoom();
+            gamedata.getBooms().forEach(boom -> {
+                boom.move();
+            });
 
-            }
+            //碰撞检测
+
+            gamedata.clearBullets();
+            gamedata.clearBoom();
+
 
             try {
                 Thread.sleep(400);

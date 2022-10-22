@@ -42,6 +42,8 @@ public class PaintService {
             });
 
             gameData.getBooms().forEach(boom -> drawStuff(panel,g,boom));
+
+            gameData.getWalls().forEach(wall -> drawStuff(panel,g,wall));
         }
 
     }

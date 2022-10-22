@@ -1,6 +1,7 @@
 package com.hanson.tank.entity;
 
 import com.hanson.enums.Direction;
+import com.hanson.enums.StuffType;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.view.resource.Images;
 
@@ -11,7 +12,7 @@ public class Bullet extends Stuff{
     private Direction direction;
 
     public Bullet(int x, int y, Direction direction){
-        super(x,y,true);
+        super(x,y,true, StuffType.Bullet);
         this.direction = direction;
     }
 

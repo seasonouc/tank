@@ -21,6 +21,13 @@ public class IPlayer {
     private String name;
 
 
+
+    /**
+     * 存活坦克数量
+     */
+    private int aliveTank;
+
+
     /**
      * 玩家坦克
      */
@@ -36,7 +43,17 @@ public class IPlayer {
         this.name = name;
     }
 
+    public void decreaseTank(){
+        aliveTank --;
+    }
+
+    public int getAliveTank() {
+        return aliveTank;
+    }
+
+
     public void generateTanks(Direction direction, int tankNum, Color color){
+        this.aliveTank = tankNum;
         tanks = new HashMap<>();
         int width = GameConstants.GAME_PANEL_GRID_COUNT / (tankNum + 1);
         switch (direction){
