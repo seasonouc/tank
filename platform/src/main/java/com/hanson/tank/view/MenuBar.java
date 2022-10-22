@@ -46,6 +46,7 @@ public class MenuBar extends JPanel {
             if (i == JFileChooser.APPROVE_OPTION) {//如果在选择器中单击“打开”
                 File[] files = chooser.getSelectedFiles();//获取选择器中选中的文件
                 gameContext.getGameData().loadPlayer(files);
+                gameContext.showInfo();
             }
         });
 

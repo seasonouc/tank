@@ -1,14 +1,26 @@
 package com.hanson.tank.aggregate;
 
+import com.hanson.Player;
+import com.hanson.entity.Command;
+import com.hanson.entity.Enemy;
+import com.hanson.entity.Tank;
 import com.hanson.enums.Direction;
+import com.hanson.enums.StuffType;
 import com.hanson.tank.constants.GameConstants;
+import com.hanson.tank.entity.Bullet;
 import com.hanson.tank.entity.ITank;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IPlayer {
+
+    public int getId() {
+        return id;
+    }
 
     /**
      * 玩家  id
@@ -50,6 +62,39 @@ public class IPlayer {
     public int getAliveTank() {
         return aliveTank;
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    private Player player;
+
+    public List<Bullet> nextMove(int[][] map, List<Enemy> enemies){
+        List<Tank> myTanks = new ArrayList<>();
+
+        List<Bullet> bullets = new ArrayList<>();
+
+        tanks.forEach((id,iTank)->{
+            Tank tank = new Tank(iTank.getId(), iTank.getX(), iTank.getY(), iTank.getDirection());
+            myTanks.add(tank);
+        });
+        List<Command> commands = player.getAction(map, myTanks,enemies);
+
+        commands.forEach(command -> {
+            command.getId();
+            Bullet bullet = tanks.get(command.getId()).doAction(map,command);
+            if(bullet != null) {
+                bullets.add(bullet);
+            }
+        });
+        return bullets;
+    }
+
+
 
 
     public void generateTanks(Direction direction, int tankNum, Color color){

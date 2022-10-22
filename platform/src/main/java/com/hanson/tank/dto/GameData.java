@@ -4,7 +4,6 @@ import com.hanson.Player;
 import com.hanson.enums.Direction;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
-import com.hanson.tank.entity.BattleMap;
 import com.hanson.tank.entity.Boom;
 import com.hanson.tank.entity.Bullet;
 import com.hanson.tank.entity.Wall;
@@ -14,7 +13,9 @@ import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 
@@ -26,18 +27,16 @@ public class GameData {
      */
     private List<IPlayer> iPlayers;
 
-    public List<Player> getPlayers() {
-        return players;
+
+    public String getGameInformation() {
+        return gameInformation;
     }
 
-    /**
-     * 外部玩家列表
-     */
-    private List<Player> players;
-    /**
-     * 地图
-     */
-    private BattleMap battleMap;
+    public void setGameInformation(String gameInformation) {
+        this.gameInformation = gameInformation;
+    }
+
+    private String gameInformation;
 
     /**
      * 游戏状态
@@ -68,6 +67,10 @@ public class GameData {
     private List<Wall> walls;
 
 
+    public int[][] getMap() {
+        return map;
+    }
+
     private int[][] map;
 
     public void refreshMap(){
@@ -97,21 +100,24 @@ public class GameData {
     }
 
 
-    public void generatePlayers(int num) {
+    private IPlayer generatePlayers(int id,Player player) {
 
         Direction genDirection[] = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+        IPlayer iPlayer = new IPlayer(id, "default");
+        iPlayer.setPlayer(player);
+        Direction dir = genDirection[id];
+        Color color = GameConstants.TANK_COLOR[dir.getDir()];
+        iPlayer.generateTanks(dir, GameConstants.INIT_TANK_NUM, color);
+        return iPlayer;
+    }
 
-        iPlayers = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
-            IPlayer player = new IPlayer(i, "default");
-            Direction dir = genDirection[i];
-            Color color = GameConstants.TANK_COLOR[dir.getDir()];
-            player.generateTanks(dir, GameConstants.INIT_TANK_NUM, color);
-            iPlayers.add(player);
-        }
+    public void init(){
+        bullets = new CopyOnWriteArrayList<>();
+        booms = new CopyOnWriteArrayList<>();
 
-        bullets = new ArrayList<>();
-        booms = new ArrayList<>();
+        generateWalls();
+
+        refreshMap();
     }
 
     public void generateWalls(){
@@ -133,23 +139,25 @@ public class GameData {
     }
 
     public void clearBullets() {
-        bullets = bullets.stream().filter(bullet -> bullet.isActive()).collect(Collectors.toList());
+        bullets.removeIf(bullet -> !bullet.isActive());
     }
 
     public void clearBoom() {
-        booms = booms.stream().filter(boom -> boom.isActive()).collect(Collectors.toList());
+        booms.removeIf(boom -> !boom.isActive());
     }
 
     public void loadPlayer(File[] playerFiles) {
         int playerNum = playerFiles.length;
-        generatePlayers(playerNum);
+        iPlayers = new ArrayList<>();
 
-        players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             try {
+
                 JarLoader loader = new JarLoader(playerFiles[i].toURL());
                 Player player = loader.loadJarAndGetPlayer();
-                players.add(player);
+                IPlayer iPlayer = generatePlayers(i,player);
+
+                iPlayers.add(iPlayer);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

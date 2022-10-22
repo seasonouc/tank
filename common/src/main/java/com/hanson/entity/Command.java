@@ -3,9 +3,8 @@ package com.hanson.entity;
 import com.hanson.enums.Action;
 import com.hanson.enums.Direction;
 
-/**
- * 指令
- */
+
+
 public class Command {
 
     public int getId() {

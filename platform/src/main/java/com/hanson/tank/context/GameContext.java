@@ -1,6 +1,6 @@
 package com.hanson.tank.context;
 
-import com.hanson.enums.StuffType;
+import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.dto.GameData;
 import com.hanson.tank.service.GameDataRefresh;
@@ -37,7 +37,10 @@ public class GameContext {
 
     private PaintService paintService;
 
-    private StuffType[][] map;
+    public static GameContext getGameContext() {
+        return gameContext;
+    }
+
 
     private ThreadPoolExecutor taskExecutor = new ThreadPoolExecutor(10,
             20,
@@ -77,11 +80,12 @@ public class GameContext {
 
         gameFrame.setIconImage(Images.TankImg[0][0]);
 
-
+        gameData.setGameInformation("Game not Start");
+        gamePanel.repaint();
     }
 
     public void start(){
-        getGameData().generateWalls();
+        getGameData().init();
         getGameData().setStart(true);
         taskExecutor.execute(new GameDataRefresh(this));
     }
@@ -100,4 +104,19 @@ public class GameContext {
     }
 
 
+    public void showInfo(){
+        StringBuffer sb = new StringBuffer();
+
+        for (IPlayer iPlayer : gameData.getIPlayers()) {
+            sb.append("player ");
+            sb.append(iPlayer.getId());
+            sb.append(":");
+            sb.append(iPlayer.getPlayer().getName());
+            sb.append("\n");
+        }
+
+        gameData.setGameInformation(sb.toString());
+
+        gamePanel.repaint();
+    }
 }

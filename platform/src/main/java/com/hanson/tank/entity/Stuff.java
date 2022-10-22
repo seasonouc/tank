@@ -3,6 +3,7 @@ package com.hanson.tank.entity;
 import com.hanson.enums.StuffType;
 
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Stuff {
 
@@ -51,6 +52,11 @@ public abstract class Stuff {
         this.x = x;
         this.y = y;
         this.active = active;
+        this.stuffType = stuffTyp;
+    }
+
+    public boolean posEqual(Stuff stuff){
+        return this.isActive() & stuff.isActive() & stuff.getX() == this.getX() && stuff.getY() == this.getY();
     }
 
     public abstract Image getImage();

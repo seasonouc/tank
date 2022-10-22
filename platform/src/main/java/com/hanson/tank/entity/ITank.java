@@ -55,8 +55,8 @@ public class ITank extends Stuff{
         this.direction = direction;
     }
 
-    public Bullet doAction(Command command){
-        if(!isActive()){
+    public Bullet doAction(int[][] map, Command command) {
+        if (!isActive() || command == null) {
             return null;
         }
         switch (command.getAction()){
@@ -66,7 +66,9 @@ public class ITank extends Stuff{
                 if (x < 0 || y < 0 || x >= GameConstants.GAME_PANEL_GRID_COUNT || y >= GameConstants.GAME_PANEL_GRID_COUNT) {
                     break;
                 }
-                setXY(x,y);
+                if (StuffType.fromType(map[x][y]).isCanMulti()){
+                    setXY(x,y);
+                }
                 break;
             }
             case Turn:{

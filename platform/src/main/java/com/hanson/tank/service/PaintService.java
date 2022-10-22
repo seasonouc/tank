@@ -23,7 +23,6 @@ public class PaintService {
     public void paintGamePanel(JPanel panel, Graphics g){
         g.setColor(Color.BLACK);
         g.fillRect(0,0, GameConstants.GRID_WIDTH*GameConstants.GAME_PANEL_GRID_COUNT,GameConstants.GRID_WIDTH*GameConstants.GAME_PANEL_GRID_COUNT);
-        GameContext context = GameContext.getInstance();
 
         if(gameData.isStart()){
 
@@ -37,18 +36,19 @@ public class PaintService {
 
             List<Bullet> bullets =  gameData.getBullets();
 
-            bullets.forEach(bullet -> {
+            for(Bullet bullet:bullets){
                 drawStuff(panel,g,bullet);
-            });
+            }
 
             gameData.getBooms().forEach(boom -> drawStuff(panel,g,boom));
-
             gameData.getWalls().forEach(wall -> drawStuff(panel,g,wall));
+        }else{
+            drawText(panel,g,gameData.getGameInformation());
         }
 
     }
 
-    public void drawStuff(JPanel panel, Graphics g, Stuff stuff){
+    public void  drawStuff(JPanel panel, Graphics g, Stuff stuff){
         if( !stuff.isActive()){
             return;
         }
@@ -59,6 +59,15 @@ public class PaintService {
                 stuff.getWidth(),
                 stuff.getWidth(),
                 panel);
+    }
+
+    public void drawText(JPanel panel, Graphics g, String text){
+        int middle = GameConstants.GAME_PANEL_GRID_COUNT / 2 * GameConstants.GRID_WIDTH;
+        int size = GameConstants.GAME_PANEL_GRID_COUNT * GameConstants.GRID_WIDTH;
+        g.setColor(Color.GRAY);
+        g.fillRect(0, 0, size, size);
+        g.setColor(Color.BLUE);
+        g.drawString(text,middle,middle);
     }
 
 

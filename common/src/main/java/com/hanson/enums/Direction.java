@@ -10,7 +10,7 @@ public enum Direction {
         this.dir = dir;
     }
 
-    private static int DIR_STEP[][] = {{0,-1},{1,0},{0,1},{-1,0}};
+    public static int DIR_STEP[][] = {{0,-1},{1,0},{0,1},{-1,0}};
 
     public int getDir(){
         return dir;
