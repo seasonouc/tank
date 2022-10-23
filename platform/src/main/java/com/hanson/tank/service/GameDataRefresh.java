@@ -1,14 +1,13 @@
 package com.hanson.tank.service;
 
-import com.hanson.entity.Enemy;
+import com.hanson.entity.Camp;
+import com.hanson.entity.Home;
 import com.hanson.entity.Tank;
+import com.hanson.enums.GameStatus;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.context.GameContext;
 import com.hanson.tank.dto.GameData;
-import com.hanson.tank.entity.Boom;
-import com.hanson.tank.entity.Bullet;
-import com.hanson.tank.entity.ITank;
-import com.hanson.tank.entity.Wall;
+import com.hanson.tank.entity.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class GameDataRefresh implements Runnable {
     public void run() {
         GameData gamedata = gameContext.getGameData();
         JPanel gamePanel = gameContext.getGamePanel();
-        while (gamedata.isStart()) {
+        while (gamedata.getStatus() == GameStatus.Starting) {
             int[][] map = gamedata.getMap();
             int servyveCount = 0;
             String winner = "";
@@ -44,34 +43,34 @@ public class GameDataRefresh implements Runnable {
                     System.arraycopy(map[i], 0, tmp[i], 0, map[i].length);
                 }
 
-                List<Enemy> enemies = new ArrayList<>();
+                List<Camp> enemies = new ArrayList<>();
 
-                for(IPlayer otherPlayer : gamedata.getIPlayers()){
-                    if(otherPlayer.getId() != iPlayer.getId()){
-                        Enemy enemy = new Enemy(otherPlayer.getId());
-                        enemies.add(enemy);
+                for (IPlayer otherPlayer : gamedata.getIPlayers()) {
+                    if (otherPlayer.getId() != iPlayer.getId()) {
+                        Camp camp = new Camp(otherPlayer.getId(), new Home(otherPlayer.getiHome().getX(), otherPlayer.getiHome().getY()));
+                        enemies.add(camp);
 
                         List<Tank> enemyTank = new ArrayList<>();
-                        otherPlayer.getTanks().forEach((id,iTank)->{
-                            if(iTank.isActive()){
-                                enemyTank.add(new Tank(iTank.getId(), iTank.getX(),iTank.getY(),iTank.getDirection()));
+                        otherPlayer.getTanks().forEach((id, iTank) -> {
+                            if (iTank.isActive()) {
+                                enemyTank.add(new Tank(iTank.getId(), iTank.getX(), iTank.getY(), iTank.getDirection()));
                             }
                         });
 
-                        enemy.setTanks(enemyTank);
+                        camp.setTanks(enemyTank);
                     }
                 }
 
-                List<Bullet> outBullets = iPlayer.nextMove(map,enemies);
+                List<Bullet> outBullets = iPlayer.nextMove(tmp,map, enemies);
                 gamedata.getBullets().addAll(outBullets);
             }
 
             if (servyveCount == 1) {
                 gamedata.setGameInformation("player: " + winner + " wins");
-                gamedata.setStart(false);
+                gamedata.setStatus(GameStatus.End);
             } else if (servyveCount == 0) {
                 gamedata.setGameInformation("Game Over,No Winners");
-                gamedata.setStart(false);
+                gamedata.setStatus(GameStatus.End);
             }
 
             List<Bullet> bullets = gamedata.getBullets();
@@ -91,11 +90,24 @@ public class GameDataRefresh implements Runnable {
                             break;
                         }
                     }
-                    if(hit){
+                    IHome home = iPlayer.getiHome();
+
+                    if (bullet.posEqual(home)) {
+                        bullet.setActive(false);
+                        iPlayer.homeDie();
+                        gamedata.getBooms().add(new Boom(bullet.getX(), bullet.getY()));
+                        for (ITank tank : iPlayer.getTanks().values()) {
+                            if (tank.isActive()) {
+                                gamedata.getBooms().add(new Boom(tank.getX(), tank.getY()));
+                            }
+                        }
+                        hit = true;
+                    }
+                    if (hit) {
                         break;
                     }
                 }
-                if(hit){
+                if (hit) {
                     continue;
                 }
 
@@ -104,9 +116,22 @@ public class GameDataRefresh implements Runnable {
                         bullet.setActive(false);
                         wall.setActive(false);
                         gamedata.getBooms().add(new Boom(bullet.getX(), bullet.getY()));
+                        hit = true;
                         break;
                     }
                 }
+                if (hit) {
+                    continue;
+                }
+
+
+                gamedata.getIrons().forEach(iron -> {
+                    if (bullet.posEqual(iron)) {
+                        bullet.setActive(false);
+                        return;
+                    }
+                });
+
             }
 
 

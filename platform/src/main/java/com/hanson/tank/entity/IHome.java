@@ -6,39 +6,31 @@ import com.hanson.tank.view.resource.Images;
 
 import java.awt.*;
 
-public class Boom extends Stuff{
+/**
+ * @Description
+ * @Author hanson
+ * @Date 2022/10/23 12:10 上午
+ **/
+public class IHome extends Stuff {
 
-    private int step;
 
-    public Boom(int x,int y){
-        super(x,y,true, StuffType.Boom);
-        step = 0;
+    public IHome(int x, int y) {
+        super(x, y, true, StuffType.Home);
     }
-
-    public void move(){
-        step ++;
-        if(step >= 5){
-            setActive(false);
-        }
-    }
-
 
     @Override
     public int getXPixel() {
-        return getX() * GameConstants.GRID_WIDTH;
+        return this.getX() * GameConstants.GRID_WIDTH;
     }
 
     @Override
     public int getYPixel() {
-        return getY() * GameConstants.GRID_WIDTH;
+        return this.getY() * GameConstants.GRID_WIDTH;
     }
 
     @Override
     public Image getImage() {
-        if(step < 5){
-            return Images.bomb[step];
-        }
-        return Images.bomb[4];
+        return Images.home;
     }
 
     @Override

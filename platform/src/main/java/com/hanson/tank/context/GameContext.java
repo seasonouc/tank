@@ -1,5 +1,6 @@
 package com.hanson.tank.context;
 
+import com.hanson.enums.GameStatus;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.dto.GameData;
@@ -86,12 +87,12 @@ public class GameContext {
 
     public void start(){
         getGameData().init();
-        getGameData().setStart(true);
+        getGameData().setStatus(GameStatus.Starting);
         taskExecutor.execute(new GameDataRefresh(this));
     }
 
     public void stop(){
-        getGameData().setStart(false);
+        getGameData().setStatus(GameStatus.End);
     }
 
 

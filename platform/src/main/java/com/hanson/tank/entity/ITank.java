@@ -3,7 +3,6 @@ package com.hanson.tank.entity;
 import com.hanson.entity.Command;
 import com.hanson.enums.Direction;
 import com.hanson.enums.StuffType;
-import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.view.resource.Images;
 
@@ -66,7 +65,7 @@ public class ITank extends Stuff{
                 if (x < 0 || y < 0 || x >= GameConstants.GAME_PANEL_GRID_COUNT || y >= GameConstants.GAME_PANEL_GRID_COUNT) {
                     break;
                 }
-                if (StuffType.fromType(map[x][y]).isCanMulti()){
+                if (StuffType.fromType(map[y][x]).isCanMulti()){
                     setXY(x,y);
                 }
                 break;

@@ -4,12 +4,20 @@ import java.util.List;
 
 /**
  * @Description
- * @Author bytedance
+ * @Author hanson
  * @Date 2022/10/22 6:22 下午
+ *
+ * 阵营，可表示敌方我和方
  **/
-public class Enemy {
+public class Camp {
 
     private int id;
+
+    public Home getHome() {
+        return home;
+    }
+
+    private Home home;
 
     public List<Tank> getTanks() {
         return tanks;
@@ -22,8 +30,9 @@ public class Enemy {
     private List<Tank> tanks;
 
 
-    public Enemy(int id){
+    public Camp(int id,Home home){
         this.id = id;
+        this.home = home;
     }
 
 

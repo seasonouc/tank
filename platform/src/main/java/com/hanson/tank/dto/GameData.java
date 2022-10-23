@@ -2,10 +2,12 @@ package com.hanson.tank.dto;
 
 import com.hanson.Player;
 import com.hanson.enums.Direction;
+import com.hanson.enums.GameStatus;
 import com.hanson.tank.aggregate.IPlayer;
 import com.hanson.tank.constants.GameConstants;
 import com.hanson.tank.entity.Boom;
 import com.hanson.tank.entity.Bullet;
+import com.hanson.tank.entity.Iron;
 import com.hanson.tank.entity.Wall;
 import com.hanson.tank.loader.JarLoader;
 
@@ -13,10 +15,8 @@ import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 
 public class GameData {
@@ -38,17 +38,19 @@ public class GameData {
 
     private String gameInformation;
 
+
+
     /**
      * 游戏状态
      */
-    private boolean start;
+    private GameStatus status;
 
-    public boolean isStart() {
-        return start;
+    public GameStatus getStatus() {
+        return status;
     }
 
-    public void setStart(boolean start) {
-        this.start = start;
+    public void setStatus(GameStatus status){
+        this.status = status;
     }
 
 
@@ -59,6 +61,12 @@ public class GameData {
     private List<Bullet> bullets;
 
     private List<Boom> booms;
+
+    public List<Iron> getIrons() {
+        return irons;
+    }
+
+    private List<Iron> irons;
 
     public List<Wall> getWalls() {
         return walls;
@@ -73,60 +81,73 @@ public class GameData {
 
     private int[][] map;
 
-    public void refreshMap(){
+    public void refreshMap() {
 
-        map = new int[GameConstants.GRID_WIDTH][GameConstants.GRID_WIDTH];
+        map = new int[GameConstants.GAME_PANEL_GRID_COUNT][GameConstants.GAME_PANEL_GRID_COUNT];
         getWalls().forEach(wall -> {
-            if(wall.isActive()){
-                map[wall.getX()][wall.getY()] = wall.getStuffType().getType();
+            if (wall.isActive()) {
+                map[wall.getY()][wall.getX()] = wall.getStuffType().getType();
 
             }
         });
 
         getBullets().forEach(bullet -> {
-            if(bullet.isActive()){
-                map[bullet.getX()][bullet.getY()] = bullet.getStuffType().getType();
+            if (bullet.isActive()) {
+                map[bullet.getY()][bullet.getX()] = bullet.getStuffType().getType();
 
             }
         });
 
-        iPlayers.forEach(player->{
-            player.getTanks().forEach((id, iTank) ->{
-                if(iTank.isActive()){
-                    map[iTank.getX()][iTank.getY()] = iTank.getStuffType().getType();
+        iPlayers.forEach(player -> {
+            player.getTanks().forEach((id, iTank) -> {
+                if (iTank.isActive()) {
+                    map[iTank.getY()][iTank.getX()] = iTank.getStuffType().getType();
                 }
             });
+            if(player.getiHome().isActive()){
+                map[player.getiHome().getY()][player.getiHome().getX()] = player.getiHome().getStuffType().getType();
+            }
+        });
+
+        irons.forEach(iron -> {
+            map[iron.getY()][iron.getX()] = iron.getStuffType().getType();
         });
     }
 
 
-    private IPlayer generatePlayers(int id,Player player) {
+    private IPlayer generatePlayers(int id, Player player) {
 
         Direction genDirection[] = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
-        IPlayer iPlayer = new IPlayer(id, "default");
+        IPlayer iPlayer = new IPlayer(id);
         iPlayer.setPlayer(player);
         Direction dir = genDirection[id];
         Color color = GameConstants.TANK_COLOR[dir.getDir()];
         iPlayer.generateTanks(dir, GameConstants.INIT_TANK_NUM, color);
+        iPlayer.generateHome(dir);
         return iPlayer;
     }
 
-    public void init(){
+    public void init() {
         bullets = new CopyOnWriteArrayList<>();
         booms = new CopyOnWriteArrayList<>();
+        irons = new ArrayList<>();
 
         generateWalls();
 
         refreshMap();
     }
 
-    public void generateWalls(){
+    public void generateWalls() {
         walls = new ArrayList<>();
+        irons = new ArrayList<>();
+
         int middle = GameConstants.GAME_PANEL_GRID_COUNT / 2;
         int four = GameConstants.GAME_PANEL_GRID_COUNT / 4;
         for (int i = middle - 5; i <= middle + 5; i++) {
-            walls.add(new Wall(four,i));
+            walls.add(new Wall(four, i));
             walls.add(new Wall(four * 3, i));
+            irons.add(new Iron(i, four));
+            irons.add(new Iron(i, four * 3));
         }
     }
 
@@ -149,13 +170,14 @@ public class GameData {
     public void loadPlayer(File[] playerFiles) {
         int playerNum = playerFiles.length;
         iPlayers = new ArrayList<>();
+        status = GameStatus.loadPlayer;
 
         for (int i = 0; i < playerNum; i++) {
             try {
 
                 JarLoader loader = new JarLoader(playerFiles[i].toURL());
                 Player player = loader.loadJarAndGetPlayer();
-                IPlayer iPlayer = generatePlayers(i,player);
+                IPlayer iPlayer = generatePlayers(i, player);
 
                 iPlayers.add(iPlayer);
             } catch (MalformedURLException e) {
@@ -168,6 +190,7 @@ public class GameData {
                 e.printStackTrace();
             }
         }
+
 
     }
 }
