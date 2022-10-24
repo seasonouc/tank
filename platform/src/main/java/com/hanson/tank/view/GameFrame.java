@@ -10,5 +10,6 @@ public class GameFrame extends JFrame {
         this.setTitle("bytedance tank battle");
         this.setResizable(false);
 
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

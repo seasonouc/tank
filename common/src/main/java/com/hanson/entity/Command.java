@@ -4,20 +4,25 @@ import com.hanson.enums.Action;
 import com.hanson.enums.Direction;
 
 
-
+/**
+ * 坦克指令
+ */
 public class Command {
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    /**
+     * 当前坦克id
+     */
     private int id;
 
+    /**
+     * 指令
+     */
     private Action action;
+
+
+    public Command(int id){
+        this.id = id;
+    }
 
     public Direction getDirection() {
         return direction;
@@ -37,7 +42,12 @@ public class Command {
         this.action = action;
     }
 
-    public Command(int id){
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
         this.id = id;
     }
+
 }

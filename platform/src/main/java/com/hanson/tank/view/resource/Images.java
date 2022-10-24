@@ -31,6 +31,12 @@ public class Images {
                 getImage("/img/p1tankR.gif"),
                 getImage("/img/p1tankD.gif"),
                 getImage("/img/p1tankL.gif")
+            },
+            {
+                getImage("/img/p2tankU.gif"),
+                getImage("/img/p2tankR.gif"),
+                getImage("/img/p2tankD.gif"),
+                getImage("/img/p2tankL.gif")
             }
     };
 
