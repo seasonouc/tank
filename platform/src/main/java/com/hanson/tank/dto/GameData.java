@@ -144,10 +144,23 @@ public class GameData {
         int middle = GameConstants.GAME_PANEL_GRID_COUNT / 2;
         int four = GameConstants.GAME_PANEL_GRID_COUNT / 4;
         for (int i = middle - 5; i <= middle + 5; i++) {
-            walls.add(new Wall(four, i));
-            walls.add(new Wall(four * 3, i));
             irons.add(new Iron(i, four));
             irons.add(new Iron(i, four * 3));
+        }
+
+        int sep = 2;
+
+        boolean paint = true;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < GameConstants.GAME_PANEL_GRID_COUNT; j++) {
+                if(paint){
+                    walls.add(new Wall(j, middle + i * sep + 1));
+                    walls.add(new Wall(j, middle - i * sep - 1));
+                    paint = false;
+                }else{
+                    paint = true;
+                }
+            }
         }
     }
 
