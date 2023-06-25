@@ -7,7 +7,7 @@ public class GameFrame extends JFrame {
 
     public GameFrame(){
         super();
-        this.setTitle("bytedance tank battle");
+        this.setTitle("tank battle");
         this.setResizable(false);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
